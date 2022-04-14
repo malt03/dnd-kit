@@ -1,5 +1,43 @@
 # @dnd-kit/core
 
+## 5.1.0
+
+### Minor Changes
+
+- [#660](https://github.com/clauderic/dnd-kit/pull/660) [`a41e5b8`](https://github.com/clauderic/dnd-kit/commit/a41e5b8eff84f0528ffc8b3455b94b95ab60a4a9) Thanks [@clauderic](https://github.com/clauderic)! - Fixed a bug with the `delta` property returned in `onDragMove`, `onDragOver`, `onDragEnd` and `onDragCancel`. The `delta` property represents the `transform` delta since dragging was initiated, along with the scroll delta. However, due to an oversight, the `delta` property was actually returning the `transform` delta and the _current_ scroll offsets rather than the scroll _delta_.
+
+  This same change has been made to the `scrollAdjustedTranslate` property that is exposed to sensors.
+
+- [#660](https://github.com/clauderic/dnd-kit/pull/660) [`a41e5b8`](https://github.com/clauderic/dnd-kit/commit/a41e5b8eff84f0528ffc8b3455b94b95ab60a4a9) Thanks [@clauderic](https://github.com/clauderic)! - The `activeNodeRect` and `containerNodeRect` are now observed by a `ResizeObserver` in case they resize while dragging.
+
+- [#660](https://github.com/clauderic/dnd-kit/pull/660) [`a41e5b8`](https://github.com/clauderic/dnd-kit/commit/a41e5b8eff84f0528ffc8b3455b94b95ab60a4a9) Thanks [@clauderic](https://github.com/clauderic)! - Improved `useDraggable` usage without `<DragOverlay>`:
+
+  - The active draggable now scrolls with the page even if there is no `<DragOverlay>` used.
+  - Fixed issues when re-ordering the active draggable node in the DOM while dragging.
+
+- [#660](https://github.com/clauderic/dnd-kit/pull/660) [`77e3d44`](https://github.com/clauderic/dnd-kit/commit/77e3d44502383d2f9a9f9af014b053619b3e37b3) Thanks [@clauderic](https://github.com/clauderic)! - Fixed an issue with `useDroppable` hook needlessly dispatching `SetDroppableDisabled` actions even if the `disabled` property had not changed since registering the droppable.
+
+- [#672](https://github.com/clauderic/dnd-kit/pull/672) [`10f6836`](https://github.com/clauderic/dnd-kit/commit/10f683631103b1d919f2fbca1177141b9369d2cf) Thanks [@clauderic](https://github.com/clauderic)! - The `measureDroppableContainers` method now properly respects the MeasuringStrategy defined on `<DndContext />` and will not measure containers while measuring is disabled.
+
+- [#656](https://github.com/clauderic/dnd-kit/pull/656) [`c1b3b5a`](https://github.com/clauderic/dnd-kit/commit/c1b3b5a0be5759b707e22c4e1b1236aaa82773a2) Thanks [@clauderic](https://github.com/clauderic)! - Fixed an issue with collision detection using stale rects. The `droppableRects` property has been added to the `CollisionDetection` interface.
+
+  All built-in collision detection algorithms have been updated to get the rect for a given droppable container from `droppableRects` rather than from the `rect.current` ref:
+
+  ```diff
+  - const rect = droppableContainers.get(id).rect.current;
+  + const rect = droppableRects.get(id);
+  ```
+
+  The `rect.current` ref stored on DroppableContainers can be stale if measuring is scheduled but has not completed yet. Collision detection algorithms should use the `droppableRects` map instead to get the latest, most up-to-date measurement of a droppable container in order to avoid computing collisions against stale rects.
+
+  This is not a breaking change. However, if you've forked any of the built-in collision detection algorithms or you've authored custom ones, we highly recommend you update your use-cases to avoid possibly computing collisions against stale rects.
+
+### Patch Changes
+
+- [#699](https://github.com/clauderic/dnd-kit/pull/699) [`e302bd4`](https://github.com/clauderic/dnd-kit/commit/e302bd4488bdfb6735c97ac42c1f4a0b1e8bfdf9) Thanks [@JuAn-Kang](https://github.com/JuAn-Kang)! - Export `DragOverlayProps` for consumers.
+
+- [#660](https://github.com/clauderic/dnd-kit/pull/660) [`e6e242c`](https://github.com/clauderic/dnd-kit/commit/e6e242cbc718ed687a26f5c622eeed4dbd6c2425) Thanks [@clauderic](https://github.com/clauderic)! - The `KeyboardSensor` was updated to use `scrollTo` instead of `scrollBy` when it is able to fully scroll to the new coordinates returned by the coordinate getter function. This resolves issues that can happen with `scrollBy` when called in rapid succession.
+
 ## 5.0.3
 
 ### Patch Changes
