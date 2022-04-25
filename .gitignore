@@ -10,7 +10,7 @@ yalc.lock
 
 # production
 /build
-dist
+# dist
 /storybook-static
 
 # testing
